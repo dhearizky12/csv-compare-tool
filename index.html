@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CSV Diff Lookup</title>
+<meta name="description" content="Bandingkan dua file CSV (Lama vs Baru) memakai kunci VLOOKUP dari gabungan kolom, lihat bedanya, lalu unduh hasilnya — semua diproses langsung di browser.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔍</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+
+  <header class="app-header">
+    <h1>CSV Diff Lookup</h1>
+    <p class="tagline">Bandingkan file CSV Lama dan Baru pakai prinsip VLOOKUP: gabungkan kolom jadi satu kunci, cocokkan, dan setiap baris yang tidak ketemu (#N/A) langsung ditandai sebagai perbedaan.</p>
+    <span class="privacy-note">🔒 Semua proses di browser kamu — file tidak pernah diunggah ke server manapun</span>
+  </header>
+
+  <section class="card">
+    <div class="section-title">1. Pilih dua file</div>
+    <div class="section-sub">File <strong>Lama</strong> adalah acuan, file <strong>Baru</strong> yang dibandingkan terhadapnya.</div>
+    <div class="upload-row">
+      <div class="dropzone" id="dzOld" tabindex="0">
+        <span class="dz-eyebrow">File Lama (Before)</span>
+        <div class="dz-label" id="labelOld">Klik atau seret file .csv ke sini</div>
+        <div class="dz-meta"></div>
+        <input type="file" id="inputOld" accept=".csv,text/csv">
+      </div>
+      <div class="dropzone" id="dzNew" tabindex="0">
+        <span class="dz-eyebrow">File Baru (After)</span>
+        <div class="dz-label" id="labelNew">Klik atau seret file .csv ke sini</div>
+        <div class="dz-meta"></div>
+        <input type="file" id="inputNew" accept=".csv,text/csv">
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="config" hidden>
+    <div class="section-title">2. Kunci VLOOKUP</div>
+    <div class="section-sub">Default: semua kolom digabung jadi satu kunci (persis metode manual Excel). Uncek beberapa kolom kalau mau rincian kolom mana yang berubah pada baris yang cocok.</div>
+    <div class="warning-box" id="structWarning" hidden></div>
+    <div class="chip-row" id="keyChips"></div>
+    <div class="toolbar">
+      <button id="autoDetectBtn">🔎 Auto-deteksi kunci unik</button>
+      <button id="selectAllBtn">☑ Pilih semua kolom</button>
+      <button class="btn-primary" id="runCompare" disabled>Bandingkan →</button>
+    </div>
+    <div class="key-mode-note" id="keyModeNote"></div>
+  </section>
+
+  <section class="card" id="results" hidden>
+    <div class="section-title">3. Hasil</div>
+    <div class="stat-grid">
+      <button class="stat-tile" data-filter="ALL"><span class="stat-num" id="statOld">0</span><span class="stat-label">Baris di Lama</span></button>
+      <button class="stat-tile" data-filter="ALL"><span class="stat-num" id="statNew">0</span><span class="stat-label">Baris di Baru</span></button>
+      <button class="stat-tile" data-filter="SAME"><span class="stat-num" id="statSame">0</span><span class="stat-label">Sama</span></button>
+      <button class="stat-tile tone-warn" data-filter="CHANGED"><span class="stat-num" id="statChanged">0</span><span class="stat-label">Berubah</span></button>
+      <button class="stat-tile tone-danger" data-filter="ONLY_OLD"><span class="stat-num" id="statOnlyOld">0</span><span class="stat-label">Hanya di Lama</span></button>
+      <button class="stat-tile tone-ok" data-filter="ONLY_NEW"><span class="stat-num" id="statOnlyNew">0</span><span class="stat-label">Hanya di Baru</span></button>
+    </div>
+
+    <div class="filter-row">
+      <div class="filter-chips">
+        <button class="filter-chip active" data-filter="DIFF">Perbedaan saja</button>
+        <button class="filter-chip" data-filter="ALL">Semua</button>
+        <button class="filter-chip" data-filter="SAME">Sama</button>
+        <button class="filter-chip" data-filter="CHANGED">Berubah</button>
+        <button class="filter-chip" data-filter="ONLY_OLD">Hanya Lama</button>
+        <button class="filter-chip" data-filter="ONLY_NEW">Hanya Baru</button>
+      </div>
+      <input type="text" id="searchBox" placeholder="Cari di kunci / kolom berubah…">
+    </div>
+
+    <div class="toolbar" style="justify-content:space-between; margin-bottom:12px;">
+      <span id="resultCount" style="font-size:13px;color:var(--text-muted)"></span>
+      <button class="btn-primary" id="downloadBtn">⬇ Unduh hasil (CSV)</button>
+    </div>
+
+    <div class="table-scroll">
+      <table id="resultTable">
+        <thead></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="pager">
+      <button id="prevPage">← Sebelumnya</button>
+      <span id="pageInfo"></span>
+      <button id="nextPage">Berikutnya →</button>
+    </div>
+  </section>
+
+  <footer>Dibuat untuk perbandingan cepat antar dua export CSV — buka lagi kapan saja, tidak butuh server.</footer>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
