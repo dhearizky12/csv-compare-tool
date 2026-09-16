@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>CSV Diff Lookup</title>
+<title>Compare Your CSV With LookUp Technique</title>
 <meta name="description" content="Bandingkan dua file CSV (Lama vs Baru) memakai kunci VLOOKUP dari gabungan kolom, lihat bedanya, lalu unduh hasilnya — semua diproses langsung di browser.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔍</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,8 +16,8 @@
 
   <header class="app-header">
     <h1>CSV Diff Lookup</h1>
-    <p class="tagline">Bandingkan file CSV Lama dan Baru pakai prinsip VLOOKUP: gabungkan kolom jadi satu kunci, cocokkan, dan setiap baris yang tidak ketemu (#N/A) langsung ditandai sebagai perbedaan.</p>
-    <span class="privacy-note">🔒 Semua proses di browser kamu — file tidak pernah diunggah ke server manapun</span>
+    <p class="tagline">Bandingkan file CSV Lama dan Baru menggunakan prinsip VLOOKUP: gabungkan kolom jadi satu new key, pengecekan, dan setiap baris yang tidak match dengan apapun (#N/A) langsung ditandai sebagai perbedaan.</p>
+    <span class="privacy-note">🔒 Semua proses di browser — file tidak pernah diunggah ke server manapun</span>
   </header>
 
   <section class="card">
@@ -26,13 +26,13 @@
     <div class="upload-row">
       <div class="dropzone" id="dzOld" tabindex="0">
         <span class="dz-eyebrow">File Lama (Before)</span>
-        <div class="dz-label" id="labelOld">Klik atau seret file .csv ke sini</div>
+        <div class="dz-label" id="labelOld">Klik atau drag and drop file .csv ke sini</div>
         <div class="dz-meta"></div>
         <input type="file" id="inputOld" accept=".csv,text/csv">
       </div>
       <div class="dropzone" id="dzNew" tabindex="0">
         <span class="dz-eyebrow">File Baru (After)</span>
-        <div class="dz-label" id="labelNew">Klik atau seret file .csv ke sini</div>
+        <div class="dz-label" id="labelNew">Klik atau drag and drop file .csv ke sini</div>
         <div class="dz-meta"></div>
         <input type="file" id="inputNew" accept=".csv,text/csv">
       </div>
@@ -40,12 +40,12 @@
   </section>
 
   <section class="card" id="config" hidden>
-    <div class="section-title">2. Kunci VLOOKUP</div>
-    <div class="section-sub">Default: semua kolom digabung jadi satu kunci (persis metode manual Excel). Uncek beberapa kolom kalau mau rincian kolom mana yang berubah pada baris yang cocok.</div>
+    <div class="section-title">2. Dummy Key VLOOKUP</div>
+    <div class="section-sub">Default: semua kolom digabung jadi satu dummy key (menggunakan prinsip metode manual Excel). Uncheck beberapa kolom jika ingin rubah rincian kolom mana yang berubah pada baris yang diinginkan.</div>
     <div class="warning-box" id="structWarning" hidden></div>
     <div class="chip-row" id="keyChips"></div>
     <div class="toolbar">
-      <button id="autoDetectBtn">🔎 Auto-deteksi kunci unik</button>
+      <button id="autoDetectBtn">🔎 Auto-deteksi unique key</button>
       <button id="selectAllBtn">☑ Pilih semua kolom</button>
       <button class="btn-primary" id="runCompare" disabled>Bandingkan →</button>
     </div>
@@ -65,7 +65,7 @@
 
     <div class="filter-row">
       <div class="filter-chips">
-        <button class="filter-chip active" data-filter="DIFF">Perbedaan saja</button>
+        <button class="filter-chip active" data-filter="DIFF">Difference Only</button>
         <button class="filter-chip" data-filter="ALL">Semua</button>
         <button class="filter-chip" data-filter="SAME">Sama</button>
         <button class="filter-chip" data-filter="CHANGED">Berubah</button>
@@ -94,7 +94,7 @@
     </div>
   </section>
 
-  <footer>Dibuat untuk perbandingan cepat antar dua export CSV — buka lagi kapan saja, tidak butuh server.</footer>
+  <footer>Dibuat untuk perbandingan cepat antar dua export CSV. You can use it everytime</footer>
 </div>
 
 <script src="app.js"></script>
